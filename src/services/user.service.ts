@@ -36,11 +36,11 @@ export const authUser = async (loginData: UserLogin) => {
     }
 
     // res.status(400).json("Welcome");
-
+    const { password, ...userWithoutPassword } = user;
     const token = generateJWTToken(user.id);
     return {
         success: true,
-        user: user,
+        user: userWithoutPassword,
         token,
     };
 }

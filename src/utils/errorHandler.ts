@@ -15,8 +15,8 @@ export const errorHandler = (
         switch (error.code) {
             case "P2002": // Unique constraint failed
                 res.status(StatusCodes.CONFLICT).json({
-                    error: "Conflict",
-                    message: `Unique constraint failed on ${error.meta?.target || "unknown field"}`,
+                    error: `Unique constraint failed on ${error.meta?.target || "unknown field"}`,
+                    message: `${error.meta?.target || "unknown field"} already exists`,
                 });
                 return
             case "P2025": // Record not found
