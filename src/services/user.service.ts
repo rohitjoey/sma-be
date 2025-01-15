@@ -44,3 +44,12 @@ export const authUser = async (loginData: UserLogin) => {
         token,
     };
 }
+
+
+export const getUserByIdService = async (userId: string) => {
+    const user = await db.user.findFirst({ where: { id: userId }, omit: { password: true } });
+    if (!user) {
+        throw new CustomError("Auth Error", StatusCodes.UNAUTHORIZED, "Authentication Error")
+    }
+    return user
+}

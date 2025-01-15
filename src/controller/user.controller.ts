@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { authUser, createNewUser, getAllUsers } from "../services/user.service";
+import { authUser, createNewUser, getAllUsers, getUserByIdService } from "../services/user.service";
 import { StatusCodes } from "http-status-codes";
 
 export const getUsers = async (req: Request, res: Response) => {
@@ -18,5 +18,11 @@ export const createUser = async (req: Request, res: Response) => {
 
 export const loginUser = async (req: Request, res: Response) => {
     const user = await authUser(req.body)
+    res.status(StatusCodes.OK).json(user)
+}
+
+export const getUserById = async (req: Request, res: Response) => {
+    const { userId } = req.params
+    const user = await getUserByIdService(userId)
     res.status(StatusCodes.OK).json(user)
 }
