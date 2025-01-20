@@ -26,7 +26,21 @@ model User {
   password  String
   gender    GenderEnum
   createdAt DateTime   @default(now()) @db.Timestamp
-  updatedAt DateTime   @updatedAt @db.Timestamp
+  updatedAt DateTime   @default(now()) @updatedAt @db.Timestamp
+
+  posts Post[]
 
   @@map("users")
+}
+
+model Post {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  content    String   @db.VarChar(255)
+  likesCount Int      @default(0)
+  createdAt  DateTime @default(now()) @db.Timestamp
+  updatedAt  DateTime @updatedAt @db.Timestamp
+  User       User?    @relation(fields: [userId], references: [id])
+  userId     String?  @db.Uuid
+
+  @@map("posts")
 }

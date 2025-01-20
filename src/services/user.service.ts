@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import { db } from "../db";
-import { UserLogin, UserRegistration } from "../schema/userSchema";
+import { UserLogin, UserRegistration } from "../schema/user.schema";
 import { CustomError } from "../utils/CustomError";
 import { generateJWTToken } from "../utils/jwtUtils";
 import { generatePassword, validatePassword } from "../utils/passwordUtils";
