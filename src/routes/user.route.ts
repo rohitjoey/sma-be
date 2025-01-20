@@ -1,25 +1,18 @@
 import { Router } from "express";
 import { createUser, getUserById, getUsers, loginUser } from "../controller/user.controller";
-import { userLoginSchema, userRegistrationSchema } from "../schema/user.schema";
+import { userLoginSchema, userRegistrationSchema } from "../dto/user.dto";
 import { validateData } from "../middlewares/requestDataValidationMiddleware";
 import { asyncHandler } from "../utils/asyncHandler";
 import passport from "passport";
 import { CustomError } from "../utils/CustomError";
+import { AuthMiddleware } from "../middlewares/authMiddleware";
 
 // starts with /api/users
 const userRouter = Router()
 userRouter.get("/", getUsers)
 userRouter.post("/register", validateData(userRegistrationSchema), asyncHandler(createUser))
 userRouter.post("/login", validateData(userLoginSchema), asyncHandler(loginUser))
-userRouter.get("/:userId", (req, res, next) => {
-    passport.authenticate('jwt', { session: false }, (err: Error | null, user: any, info: any, status?: number) => {
-        if (err || !user) {
-            throw new CustomError("Not Authorized to perform this action", 401, "Authorization Error")
-        } else {
-            return next();
-        }
-    })(req, res, next)
-}, asyncHandler(getUserById))
+userRouter.get("/:userId", AuthMiddleware, asyncHandler(getUserById))
 
 export default userRouter;
 

@@ -9,7 +9,7 @@ export const errorHandler = (
     res: Response,
     next: NextFunction
 ): void => {
-    console.error("Error logged in error handler", error);
+    console.error("Error logged in error handler:--", error?.message);
 
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
         switch (error.code) {
