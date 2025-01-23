@@ -4,7 +4,10 @@ import { CreatePostDto, UpdatePostDto } from "../dto/post.dto";
 import { CustomError } from "../utils/CustomError";
 
 export const getAllPosts = async () => {
-  return await db.post.findMany({ orderBy: { createdAt: "desc" } });
+  return await db.post.findMany({
+    orderBy: { createdAt: "desc" },
+    include: { User: { omit: { password: true } } },
+  });
 };
 
 export const createNewPost = async (newPostData: CreatePostDto) => {
@@ -20,7 +23,7 @@ export const updatePostService = async (
   if (!post) {
     throw new CustomError("Post not found", StatusCodes.NOT_FOUND, "NOT FOUND");
   }
-  if (post?.userId !== userId) {
+  if (post?.userId !== userId && !updateData.like) {
     throw new CustomError(
       "Not Authorized to update",
       StatusCodes.UNAUTHORIZED,
@@ -28,9 +31,16 @@ export const updatePostService = async (
     );
   }
 
+  if (updateData.like) {
+    post.likesCount = post.likesCount + 1;
+  }
+  if (updateData.content) {
+    post.content = updateData.content;
+  }
+
   return await db.post.update({
     where: { id: updateData.id },
-    data: updateData,
+    data: post,
   });
 };
 

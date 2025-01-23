@@ -2,11 +2,12 @@ import { z } from "zod";
 
 export const createPostSchema = z.object({
   content: z.string(),
-  likesCount: z.number().default(0),
 });
 
-export const updatePostSchema = createPostSchema.partial().extend({
+export const updatePostSchema = z.object({
   id: z.string(),
+  content:z.string().nullable().nullish(),
+  like:z.boolean().nullable().default(false)
 });
 
 export const createPostDto = createPostSchema.extend({
@@ -15,4 +16,4 @@ export const createPostDto = createPostSchema.extend({
 
 export type CreatePostDto = z.infer<typeof createPostDto>;
 
-export type UpdatePostDto = CreatePostDto & { id: string };
+export type UpdatePostDto = z.infer<typeof updatePostSchema>;
