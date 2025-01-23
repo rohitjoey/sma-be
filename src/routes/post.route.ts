@@ -18,17 +18,15 @@ postRouter
     AuthMiddleware,
     validateData(createPostSchema),
     asyncHandler(createPost)
-  )
+  );
+
+postRouter
+  .route("/:postId")
   .patch(
     AuthMiddleware,
     validateData(updatePostSchema),
     asyncHandler(updatePostController)
-  );
-
-postRouter.delete(
-  "/:postId",
-  AuthMiddleware,
-  asyncHandler(deletePostController)
-);
+  )
+  .delete(AuthMiddleware, asyncHandler(deletePostController));
 
 export default postRouter;

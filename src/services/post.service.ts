@@ -7,6 +7,7 @@ export const getAllPosts = async () => {
   return await db.post.findMany({
     orderBy: { createdAt: "desc" },
     include: { User: { omit: { password: true } } },
+    take: 10,
   });
 };
 
