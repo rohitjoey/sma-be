@@ -8,7 +8,7 @@ import {
 } from "../services/post.service";
 
 export const getPosts = async (req: Request, res: Response) => {
-  const posts = await getAllPosts();
+  const posts = await getAllPosts(req.query);
   res.status(StatusCodes.OK).json(posts);
 };
 

@@ -1,7 +1,10 @@
 import { z } from "zod";
 
 export const createPostSchema = z.object({
-  content: z.string(),
+  content: z
+    .string()
+    .trim()
+    .min(1, { message: "empty" }),
 });
 
 export const updatePostSchema = z.object({

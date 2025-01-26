@@ -2,12 +2,28 @@ import { StatusCodes } from "http-status-codes";
 import { db } from "../db";
 import { CreatePostDto, UpdatePostDto } from "../dto/post.dto";
 import { CustomError } from "../utils/CustomError";
+import { ParsedQs } from "qs";
+import { Prisma } from "@prisma/client";
 
-export const getAllPosts = async () => {
-  return await db.post.findMany({
+export const getAllPosts = async (query: ParsedQs) => {
+  let searchTerm: string | undefined;
+  if (typeof query.search === "string") {
+    searchTerm = query.search;
+  } else {
+    searchTerm = undefined;
+  }
+  let whereOperator: Prisma.PostWhereInput = {};
+  if (query.search) {
+    whereOperator["OR"] = [
+      { content: { contains: searchTerm, mode: "insensitive" } },
+      { User: { fullname: { contains: searchTerm, mode: "insensitive" } } },
+    ];
+  }
+  return  await db.post.findMany({
+    where: whereOperator,
     orderBy: { createdAt: "desc" },
     include: { User: { omit: { password: true } } },
-    take: 10,
+    take: 11,
   });
 };
 
