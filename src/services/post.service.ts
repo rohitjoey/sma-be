@@ -2,16 +2,13 @@ import { StatusCodes } from "http-status-codes";
 import { db } from "../db";
 import { CreatePostDto, UpdatePostDto } from "../dto/post.dto";
 import { CustomError } from "../utils/CustomError";
-import { ParsedQs } from "qs";
 import { Prisma } from "@prisma/client";
+import { PostGetQuery } from "../controller/post.controller";
 
-export const getAllPosts = async (query: ParsedQs) => {
-  let searchTerm: string | undefined;
-  if (typeof query.search === "string") {
-    searchTerm = query.search;
-  } else {
-    searchTerm = undefined;
-  }
+export const getAllPosts = async (query: PostGetQuery) => {
+  const searchTerm = query.search;
+  // const cursorId = query.cursor;
+
   let whereOperator: Prisma.PostWhereInput = {};
   if (query.search) {
     whereOperator["OR"] = [
@@ -19,12 +16,19 @@ export const getAllPosts = async (query: ParsedQs) => {
       { User: { fullname: { contains: searchTerm, mode: "insensitive" } } },
     ];
   }
-  return  await db.post.findMany({
+  const res = await db.post.findMany({
     where: whereOperator,
     orderBy: { createdAt: "desc" },
+    // cursor: cursorId ? { id: cursorId } : undefined,
+    // skip: cursorId ? 1 : 0,
+    // take: 11,
     include: { User: { omit: { password: true } } },
-    take: 11,
   });
+
+  const lastPost = res.length >= 10 ? res[res.length - 1].id : null;
+
+  // return { posts: res, nextCursor: lastPost };
+  return res;
 };
 
 export const createNewPost = async (newPostData: CreatePostDto) => {

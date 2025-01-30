@@ -7,7 +7,15 @@ import {
   updatePostService,
 } from "../services/post.service";
 
-export const getPosts = async (req: Request, res: Response) => {
+export interface PostGetQuery {
+  cursor: string | undefined;
+  search: string | undefined;
+}
+
+export const getPosts = async (
+  req: Request<{}, {}, {}, PostGetQuery>,
+  res: Response
+) => {
   const posts = await getAllPosts(req.query);
   res.status(StatusCodes.OK).json(posts);
 };

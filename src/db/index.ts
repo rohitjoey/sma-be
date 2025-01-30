@@ -15,17 +15,17 @@ let prisma: PrismaClient;
 //     },
 //   ],
 // });
-prisma = new PrismaClient();
+prisma = new PrismaClient({ log: [{ emit: "event", level: "query" }] });
 // // } else {
 // //   if (!global.cachedPrisma) {
 // //     global.cachedPrisma = new PrismaClient();
 // //   }
 // //   prisma = global.cachedPrisma;
 // // }
-// prisma.$on("query" as never, (e: Prisma.QueryEvent) => {
-//   console.log("Query: " + e.query);
-//   console.log("Params: " + e.params);
-//   console.log("Duration: " + e.duration + "ms");
-// });
+prisma.$on("query" as never, (e: Prisma.QueryEvent) => {
+  console.log("Query: " + e.query);
+  console.log("Params: " + e.params);
+  console.log("Duration: " + e.duration + "ms");
+});
 
 export const db = prisma;
